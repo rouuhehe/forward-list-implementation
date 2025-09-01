@@ -1,0 +1,217 @@
+#include <iostream>
+
+/* -------- required structure -------- */
+template <typename T>
+struct Node {
+    T data;
+    Node *next;
+
+    Node(T data) : data(data), next(nullptr) {}
+    Node() {}
+};
+
+/* -------- class implementation --------*/
+template <typename T>
+class forward {
+    private:
+    Node<T> *head;
+
+public:
+    forward() : head(nullptr) {} 
+    ~forward() {
+        while (head) {
+            Node<T> *temp = head;
+            head = head->next;
+            delete temp;
+        }
+    }
+
+    // returns first element of the list, throws runtime error if the list is empty
+    T front() { 
+        if (!head)
+            throw std::runtime_error("List is empty!");
+        return head->data;
+    }
+
+    // returns last elemet of the list, throws runtime error if the list is empty
+    T back() {
+        if (!head)
+            throw std::runtime_error("List is empty!");
+        Node<T> *curr = head;
+        while (curr->next)
+            curr = curr->next;
+        return curr->data;
+    }
+
+    // returns true if empty;
+    bool empty() {
+        return head == nullptr;
+    }
+
+    // returns list's size;
+    int size() {
+        int c = 0;
+        Node<T> *curr = head;
+        while (curr) {
+            curr = curr->next;
+            c++;
+        }
+        return c;
+    }
+
+    // inserts an element in the first position of the list
+    void push_front(T val) {
+        Node<T> *temp = new Node<T>(val);
+        temp->next = head;
+        head = temp;
+    }
+
+    // inserts an element in the last position of the list
+    void push_back(T val) {
+        if (!head) {
+            head = new Node<T>(val);
+            return;
+        }
+        Node<T> *temp = new Node<T>(val);
+        auto curr = head;
+        while (curr->next)
+            curr = curr->next;
+        curr->next = temp;
+    }
+
+    T operator[](std::size_t idx) {
+        if (!head)
+            throw std::runtime_error("List is empty!");
+        if (idx > this->size() - 1)
+            throw std::out_of_range("Index out of bounds");
+        int c = 0;
+        Node<T> *temp = head;
+        while (c < idx) {
+            temp = temp->next;
+            c++;
+        }
+        return temp->data;
+    }
+
+    void pop_front() {
+        if (!head)
+            throw std::runtime_error("List is empty!");
+        Node<T> *temp = head;
+        head = head->next;
+        temp = nullptr;
+    }
+
+    void pop_back() {
+        if (!head)
+            throw std::runtime_error("List is empty!");
+        Node<T> *temp = head;
+        while (temp->next->next) {
+            temp = temp->next;
+        }
+        temp->next = nullptr;
+    }
+
+    void clear() {
+        while (head) {
+            Node<T> *temp = head;
+            head = head->next;
+            delete temp;
+        }
+    }
+
+    Node<T> *getMiddle() {
+        if (!head)
+            throw std::runtime_error("List is empty!");
+
+        /*
+            tenemos dos punteros, uno que recorre n pasos y el otro 2n pasos
+            cuando el que avanza 2n pasos llegue al final y pase a ser nullptr,
+            el que recorre n pasos estará por la mitad
+        */
+
+        Node<T> *p1 = head, *p2 = head->next;
+        while (p1 && p2->next) {
+            p1 = p1->next;
+            p2 = p2->next->next;
+        }
+        return p1;
+    }
+
+    Node<T> *merge(Node<T> *list1, Node<T> *list2) {
+        if (!list1 && list2)
+            return list2;
+        else if (!list1 && !list2)
+            return list1;
+        else if (list1 && !list2)
+            return list1;
+
+        Node<T> list;
+        Node<T> *temp = &list;
+        while (list1 && list2) {
+            if (list1->data < list2->data) {
+                temp->next = list1;
+                list1 = list1->next;
+            } else {
+                temp->next = list2;
+                list2 = list2->next;
+            }
+            temp = temp->next;
+        }
+        temp->next = (list1) ? list1 : list2;
+        return list.next;
+    }
+
+    Node<T> *mergeSort() {
+        if (!head || !head->next)
+            return head;
+
+        Node<T> *mid = getMiddle(); // primera mitad (p1)
+        Node<T> *right = mid->next; // segunda mitad (p1->next)
+        mid->next = nullptr;        // cortamos p1
+
+        Node<T> *leftSort = mid->mergeSort();
+        Node<T> *rightSort = right->mergeSort();
+
+        return merge(leftSort, rightSort);
+    }
+
+    void sort() {
+        head = mergeSort(head);
+    }
+
+    void print() {
+        Node<T> *p1 = head;
+        while (p1) {
+            std::cout << p1->data << " ";
+            p1 = p1->next;
+        }
+    }
+};
+
+int main()
+{
+    forward<int> hello;
+    hello.push_front(1);
+    hello.push_front(2);
+    hello.push_front(3);
+    hello.push_back(0);
+    std::cout << "front: " << hello.front() << " back: " << hello.back() << "\n";
+    std::cout << "size: " << hello.size() << "\n";
+    hello.print();
+    hello.sort();
+    hello.print();
+    // hello.pop_front();
+    // std::cout << "front: " << hello.front() << " back: " << hello.back() << "\n";
+    // std::cout << "size: " << hello.size() << "\n";
+
+    // hello.pop_back();
+    // std::cout << "front: " << hello.front() << " back: " << hello.back() << "\n";
+    // std::cout << "size: " << hello.size() << "\n";
+}
+/*
+template <typename T>
+void sort();
+
+template <typename T>
+void reverse();
+*/
