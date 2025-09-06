@@ -1,6 +1,6 @@
 #include <iostream>
 
-/* -------- required structure -------- */
+/* -------- node structure -------- */
 template <typename T>
 struct Node {
     T data;
@@ -10,14 +10,14 @@ struct Node {
     Node() {}
 };
 
-/* -------- class implementation --------*/
+/* -------- forward_list implementation --------*/
 template <typename T>
 class forward {
-    private:
+private:
     Node<T> *head;
 
 public:
-    forward() : head(nullptr) {} 
+    forward() : head(nullptr) {}
     ~forward() {
         while (head) {
             Node<T> *temp = head;
@@ -26,14 +26,14 @@ public:
         }
     }
 
-    // returns first element of the list, throws runtime error if the list is empty
-    T front() { 
+    // returns the first element of the list, throws runtime error if the list is empty
+    T front() {
         if (!head)
             throw std::runtime_error("List is empty!");
         return head->data;
     }
 
-    // returns last elemet of the list, throws runtime error if the list is empty
+    // returns the last elemet of the list, throws runtime error if the list is empty
     T back() {
         if (!head)
             throw std::runtime_error("List is empty!");
@@ -80,9 +80,9 @@ public:
     }
 
     T operator[](std::size_t idx) {
-        if (!head)
+        if (!head) 
             throw std::runtime_error("List is empty!");
-        if (idx > this->size() - 1)
+        if (idx > this->size() - 1) 
             throw std::out_of_range("Index out of bounds");
         int c = 0;
         Node<T> *temp = head;
@@ -119,17 +119,10 @@ public:
         }
     }
 
-    Node<T> *getMiddle() {
-        if (!head)
-            throw std::runtime_error("List is empty!");
-
-        /*
-            tenemos dos punteros, uno que recorre n pasos y el otro 2n pasos
-            cuando el que avanza 2n pasos llegue al final y pase a ser nullptr,
-            el que recorre n pasos estará por la mitad
-        */
-
-        Node<T> *p1 = head, *p2 = head->next;
+    Node<T> *getMiddle(Node<T> *node){
+        if (!node)
+            return node;
+        Node<T> *p1 = node, *p2 = node->next;
         while (p1 && p2->next) {
             p1 = p1->next;
             p2 = p2->next->next;
@@ -138,20 +131,18 @@ public:
     }
 
     Node<T> *merge(Node<T> *list1, Node<T> *list2) {
-        if (!list1 && list2)
-            return list2;
-        else if (!list1 && !list2)
-            return list1;
-        else if (list1 && !list2)
-            return list1;
+        if (!list1 && list2) return list2;
+        else if (!list1 && !list2) return list1;
+        else if (list1 && !list2) return list1;
 
         Node<T> list;
         Node<T> *temp = &list;
         while (list1 && list2) {
-            if (list1->data < list2->data) {
+            if (list1->data < list2->data){
                 temp->next = list1;
                 list1 = list1->next;
-            } else {
+            }
+            else{
                 temp->next = list2;
                 list2 = list2->next;
             }
@@ -161,24 +152,24 @@ public:
         return list.next;
     }
 
-    Node<T> *mergeSort() {
-        if (!head || !head->next)
-            return head;
+    Node<T> *mergeSort(Node<T> *node) {
+        if (!node || !node->next)
+            return node;
 
-        Node<T> *mid = getMiddle(); // primera mitad (p1)
-        Node<T> *right = mid->next; // segunda mitad (p1->next)
-        mid->next = nullptr;        // cortamos p1
+        Node<T> *middle = getMiddle(node);
+        Node<T> *right = middle->next;
+        middle->next = nullptr;
+        Node<T> *left = node;
 
-        Node<T> *leftSort = mid->mergeSort();
-        Node<T> *rightSort = right->mergeSort();
-
-        return merge(leftSort, rightSort);
+        Node<T> *leftSorted = mergeSort(left);
+        Node<T> *rightSorted = mergeSort(right);
+        return merge(leftSorted, rightSorted);
     }
 
     void sort() {
         head = mergeSort(head);
     }
-
+    
     void print() {
         Node<T> *p1 = head;
         while (p1) {
@@ -186,7 +177,27 @@ public:
             p1 = p1->next;
         }
     }
+
+    // here i wanted to implement the algorithm i suggested in class; however, since its complexity is O(nlogn)
+    // i though it'd only be nice as an exercise so i still implemented the other version which complexity is O(n) .
+    void reverseEXTRA() {
+        if (!node || !node->next)
+            return node;
+        Node<T> *middle = getMiddle(node);
+        Node<T> *right = middle->next;
+        middle->next = nullptr;
+        Node<T> *left = node;
+
+        Node<T> *leftInverted = reverseEXTRA(left);
+        Node<T> *rightInverted = reverseEXTRA(right);
+
+    }
+
+    void reverse(){
+
+    }
 };
+
 
 int main()
 {
@@ -198,6 +209,7 @@ int main()
     std::cout << "front: " << hello.front() << " back: " << hello.back() << "\n";
     std::cout << "size: " << hello.size() << "\n";
     hello.print();
+    std::cout<<"\n";
     hello.sort();
     hello.print();
     // hello.pop_front();
