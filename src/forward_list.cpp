@@ -26,14 +26,14 @@ public:
         }
     }
 
-    // returns the first element of the list, throws runtime error if the list is empty
+    // returns the first element of the list
     T front() {
         if (!head)
             throw std::runtime_error("List is empty!");
         return head->data;
     }
 
-    // returns the last elemet of the list, throws runtime error if the list is empty
+    // returns the last elemet of the list
     T back() {
         if (!head)
             throw std::runtime_error("List is empty!");
@@ -97,8 +97,8 @@ public:
         if (!head)
             throw std::runtime_error("List is empty!");
         Node<T> *temp = head;
-        head = head->next;
-        temp = nullptr;
+        head = temp->next;
+        delete temp;
     }
 
     void pop_back() {
@@ -178,9 +178,9 @@ public:
         }
     }
 
-    // here i wanted to implement the algorithm i suggested in class; however, since its complexity is O(nlogn)
-    // i though it'd only be nice as an exercise so i still implemented the other version which complexity is O(n) .
-    void reverseEXTRA() {
+    // here i wanted to implement the algorithm i suggested in class; however, since its complexity is greater that the other one
+    // i though it'd only be nice as an exercise so i still implemented the other version
+    Node<T> *reverseEXTRA(Node<T> *node) {
         if (!node || !node->next)
             return node;
         Node<T> *middle = getMiddle(node);
@@ -191,10 +191,30 @@ public:
         Node<T> *leftInverted = reverseEXTRA(left);
         Node<T> *rightInverted = reverseEXTRA(right);
 
+        auto tail = rightInverted;
+        while(tail->next != nullptr)
+            tail = tail->next;
+        tail->next = leftInverted;
+        return rightInverted;
+    }
+
+    Node<T> *reverse1(Node<T> *node){
+        if (!node || !node->next)
+            return node;
+
+        auto reverse = reverse1(node->next);
+        node->next->next = node;
+        node->next = nullptr;        
+        return reverse;
+        
     }
 
     void reverse(){
+        head = reverse1(head);
+    }
 
+    void reverseEXTRA(){
+        head = reverseEXTRA(head);
     }
 };
 
@@ -209,8 +229,11 @@ int main()
     std::cout << "front: " << hello.front() << " back: " << hello.back() << "\n";
     std::cout << "size: " << hello.size() << "\n";
     hello.print();
-    std::cout<<"\n";
-    hello.sort();
+    //std::cout<<"\n";
+    //hello.sort();
+    //hello.print();
+    std::cout << "\n";
+    hello.reverse();
     hello.print();
     // hello.pop_front();
     // std::cout << "front: " << hello.front() << " back: " << hello.back() << "\n";
@@ -220,10 +243,3 @@ int main()
     // std::cout << "front: " << hello.front() << " back: " << hello.back() << "\n";
     // std::cout << "size: " << hello.size() << "\n";
 }
-/*
-template <typename T>
-void sort();
-
-template <typename T>
-void reverse();
-*/
