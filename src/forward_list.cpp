@@ -26,14 +26,12 @@ public:
         }
     }
 
-    // returns the first element of the list
     T front() {
         if (!head)
             throw std::runtime_error("List is empty!");
         return head->data;
     }
 
-    // returns the last elemet of the list
     T back() {
         if (!head)
             throw std::runtime_error("List is empty!");
@@ -43,12 +41,10 @@ public:
         return curr->data;
     }
 
-    // returns true if empty;
     bool empty() {
         return head == nullptr;
     }
 
-    // returns list's size;
     int size() {
         int c = 0;
         Node<T> *curr = head;
@@ -59,14 +55,12 @@ public:
         return c;
     }
 
-    // inserts an element in the first position of the list
     void push_front(T val) {
         Node<T> *temp = new Node<T>(val);
         temp->next = head;
         head = temp;
     }
 
-    // inserts an element in the last position of the list
     void push_back(T val) {
         if (!head) {
             head = new Node<T>(val);
@@ -123,7 +117,7 @@ public:
         if (!node)
             return node;
         Node<T> *p1 = node, *p2 = node->next;
-        while (p1 && p2->next) {
+        while (p2 && p2->next) {
             p1 = p1->next;
             p2 = p2->next->next;
         }
@@ -176,10 +170,9 @@ public:
             std::cout << p1->data << " ";
             p1 = p1->next;
         }
+        delete p1;
     }
 
-    // here i wanted to implement the algorithm i suggested in class; however, since its complexity is greater that the other one
-    // i though it'd only be nice as an exercise so i still implemented the other version
     Node<T> *reverseEXTRA(Node<T> *node) {
         if (!node || !node->next)
             return node;
@@ -202,11 +195,10 @@ public:
         if (!node || !node->next)
             return node;
 
-        auto reverse = reverse1(node->next);
+        Node<T> *reverse = reverse1(node->next);
         node->next->next = node;
         node->next = nullptr;        
         return reverse;
-        
     }
 
     void reverse(){
@@ -223,15 +215,16 @@ int main()
 {
     forward<int> hello;
     hello.push_front(1);
+    hello.push_front(5);
     hello.push_front(2);
     hello.push_front(3);
     hello.push_back(0);
     std::cout << "front: " << hello.front() << " back: " << hello.back() << "\n";
     std::cout << "size: " << hello.size() << "\n";
     hello.print();
-    //std::cout<<"\n";
-    //hello.sort();
-    //hello.print();
+    std::cout<<"\n";
+    hello.sort();
+    hello.print();
     std::cout << "\n";
     hello.reverse();
     hello.print();
