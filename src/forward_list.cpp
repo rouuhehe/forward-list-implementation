@@ -101,7 +101,6 @@ public:
             throw std::runtime_error("List is empty!");
         
         if (!head->next) {
-            delete head;
             head = nullptr;
             return;
         }
@@ -223,7 +222,9 @@ int main()
 {
     forward<int> hello;
     hello.push_front(1);
+    
     hello.push_front(5);
+    /*
     hello.push_front(2);
     hello.push_front(3);
     hello.push_back(0);
@@ -236,10 +237,9 @@ int main()
     std::cout << "\n";
     hello.reverse();
     hello.print();
-    
-    forward<int> hello1;
-    hello1.push_front(1);
-    std::cout<<hello1[-1];
+    */
+    hello.pop_back();
+    hello.print();
     // hello.pop_front();
     // std::cout << "front: " << hello.front() << " back: " << hello.back() << "\n";
     // std::cout << "size: " << hello.size() << "\n";
