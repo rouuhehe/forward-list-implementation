@@ -73,11 +73,12 @@ public:
         curr->next = temp;
     }
 
-    T operator[](std::size_t idx) {
-        if (!head) 
+    T operator[](int idx) {
+        if (!head)
             throw std::runtime_error("List is empty!");
-        if (idx > this->size() - 1) 
+        else if (idx >= this->size() || idx < 0)
             throw std::out_of_range("Index out of bounds");
+
         int c = 0;
         Node<T> *temp = head;
         while (c < idx) {
@@ -98,6 +99,13 @@ public:
     void pop_back() {
         if (!head)
             throw std::runtime_error("List is empty!");
+        
+        if (!head->next) {
+            delete head;
+            head = nullptr;
+            return;
+        }
+        
         Node<T> *temp = head;
         while (temp->next->next) {
             temp = temp->next;
@@ -228,6 +236,10 @@ int main()
     std::cout << "\n";
     hello.reverse();
     hello.print();
+    
+    forward<int> hello1;
+    hello1.push_front(1);
+    std::cout<<hello1[-1];
     // hello.pop_front();
     // std::cout << "front: " << hello.front() << " back: " << hello.back() << "\n";
     // std::cout << "size: " << hello.size() << "\n";
