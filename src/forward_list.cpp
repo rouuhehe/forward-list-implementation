@@ -132,9 +132,8 @@ public:
     }
 
     Node<T> *merge(Node<T> *list1, Node<T> *list2) {
-        if (!list1 && list2) return list2;
-        else if (!list1 && !list2) return list1;
-        else if (list1 && !list2) return list1;
+        if (!list1) return list2;
+        if (!list2) return list1;
 
         Node<T> list;
         Node<T> *temp = &list;
@@ -216,35 +215,3 @@ public:
         head = reverseEXTRA(head);
     }
 };
-
-
-int main()
-{
-    forward<int> hello;
-    hello.push_front(1);
-    
-    hello.push_front(5);
-    /*
-    hello.push_front(2);
-    hello.push_front(3);
-    hello.push_back(0);
-    std::cout << "front: " << hello.front() << " back: " << hello.back() << "\n";
-    std::cout << "size: " << hello.size() << "\n";
-    hello.print();
-    std::cout<<"\n";
-    hello.sort();
-    hello.print();
-    std::cout << "\n";
-    hello.reverse();
-    hello.print();
-    */
-    hello.pop_back();
-    hello.print();
-    // hello.pop_front();
-    // std::cout << "front: " << hello.front() << " back: " << hello.back() << "\n";
-    // std::cout << "size: " << hello.size() << "\n";
-
-    // hello.pop_back();
-    // std::cout << "front: " << hello.front() << " back: " << hello.back() << "\n";
-    // std::cout << "size: " << hello.size() << "\n";
-}
